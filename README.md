@@ -1,6 +1,10 @@
 # Hawks Job Hunter
 
+![Hawks logo](assets/hawks-logo.jpg)
+
 Hawks Job Hunter is an autonomous job-scouting project.
+
+![Hawks Scout as Code](assets/hawks-scout-as-code.jpg)
 
 This initial public version starts with **Scout as Code**: a programmable pipeline that turns job discovery into repeatable retrieval, validation, filtering, scoring, deduplication, and structured JSON output.
 
