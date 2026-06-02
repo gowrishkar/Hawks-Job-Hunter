@@ -1,0 +1,56 @@
+:root {
+  color-scheme: dark;
+  --bg: #07101f;
+  --panel: rgba(11, 23, 43, 0.82);
+  --line: rgba(108, 155, 255, 0.28);
+  --gold: #f3b23f;
+  --blue: #65a8ff;
+  --text: #eef5ff;
+  --muted: #a9bad4;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  min-height: 100vh;
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  background:
+    radial-gradient(circle at 15% 10%, rgba(101, 168, 255, 0.22), transparent 32rem),
+    radial-gradient(circle at 85% 15%, rgba(243, 178, 63, 0.15), transparent 28rem),
+    linear-gradient(135deg, #050914 0%, var(--bg) 60%, #111827 100%);
+  color: var(--text);
+}
+.shell { width: min(1120px, calc(100% - 32px)); margin: 0 auto; padding: 64px 0; }
+.hero {
+  border: 1px solid var(--line);
+  border-radius: 28px;
+  padding: clamp(32px, 6vw, 72px);
+  background: linear-gradient(135deg, rgba(11, 23, 43, 0.96), rgba(7, 16, 31, 0.72));
+  box-shadow: 0 30px 90px rgba(0, 0, 0, 0.38);
+}
+.eyebrow { color: var(--gold); font-weight: 700; letter-spacing: .08em; text-transform: uppercase; font-size: 0.85rem; }
+h1 { font-size: clamp(4rem, 12vw, 8.5rem); line-height: .9; margin: 20px 0 12px; letter-spacing: -0.08em; }
+.lede { color: var(--blue); font-size: clamp(1.4rem, 3vw, 2.2rem); margin: 0 0 18px; font-weight: 700; }
+.summary { color: var(--muted); font-size: 1.12rem; line-height: 1.7; max-width: 780px; }
+.actions { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 30px; }
+.actions a {
+  color: var(--text);
+  text-decoration: none;
+  border: 1px solid var(--line);
+  padding: 12px 18px;
+  border-radius: 999px;
+  background: rgba(101, 168, 255, 0.08);
+  font-weight: 700;
+}
+.grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-top: 18px; }
+article, .pipeline {
+  border: 1px solid var(--line);
+  border-radius: 22px;
+  background: var(--panel);
+  padding: 22px;
+}
+h2 { margin: 0 0 10px; color: var(--gold); }
+article p, .pipeline p { margin: 0; color: var(--muted); line-height: 1.6; }
+.pipeline { margin-top: 18px; text-align: center; }
+.pipeline p { color: var(--text); font-size: clamp(1rem, 2.5vw, 1.55rem); font-weight: 800; }
+@media (max-width: 900px) { .grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 560px) { .grid { grid-template-columns: 1fr; } .shell { padding: 24px 0; } }
