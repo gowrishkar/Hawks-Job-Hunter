@@ -1,4 +1,9 @@
-from hawks.scout import JobLead, dedupe_decisions, score_lead
+import datetime as dt
+
+from hawks.scout import JobLead, dedupe_decisions, evaluate_freshness, score_lead
+
+
+TODAY = dt.date(2026, 6, 3)
 
 
 def test_high_trust_ai_architect_role_is_shortlisted():
@@ -82,3 +87,32 @@ def test_dedupe_decisions_keeps_best_evidence_for_same_role():
     assert len(deduped) == 2
     assert deduped[0].lead.url == "https://example.com/careers/ai-product-manager"
     assert deduped[1].lead.title == "AI Solutions Architect"
+
+
+def test_freshness_signal_marks_recent_posting_actionable():
+    signal = evaluate_freshness("May 20, 2026", today=TODAY)
+
+    assert signal.label == "recent"
+    assert signal.days_old == 14
+    assert signal.is_actionable
+    assert signal.reason == "posted on 2026-05-20"
+
+
+def test_freshness_signal_flags_stale_and_unknown_postings():
+    stale = evaluate_freshness("2026-04-01", today=TODAY)
+    unknown = evaluate_freshness("not listed", today=TODAY)
+
+    assert stale.label == "stale"
+    assert stale.days_old == 63
+    assert not stale.is_actionable
+    assert unknown.label == "unknown"
+    assert unknown.days_old is None
+    assert not unknown.is_actionable
+
+
+def test_freshness_signal_accepts_relative_job_board_text():
+    signal = evaluate_freshness("2 days ago", today=TODAY)
+
+    assert signal.label == "fresh"
+    assert signal.days_old == 2
+    assert signal.is_actionable
