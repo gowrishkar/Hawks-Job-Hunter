@@ -1,6 +1,6 @@
 import datetime as dt
 
-from hawks.scout import JobLead, dedupe_decisions, evaluate_freshness, score_lead
+from hawks.scout import JobLead, dedupe_decisions, evaluate_freshness, score_lead, triage_decision
 
 
 TODAY = dt.date(2026, 6, 3)
@@ -116,3 +116,48 @@ def test_freshness_signal_accepts_relative_job_board_text():
     assert signal.label == "fresh"
     assert signal.days_old == 2
     assert signal.is_actionable
+
+
+def test_triage_prioritizes_fresh_shortlisted_trusted_roles_for_review():
+    lead = JobLead(
+        title="AI Product Manager - Agentic Workflow Platform",
+        company="Example AI",
+        url="https://example.com/careers/ai-product-manager",
+        location="Remote India",
+        source="official",
+        summary="Own LLM workflow automation roadmap and strategy.",
+    )
+
+    recommendation = triage_decision(
+        score_lead(lead),
+        evaluate_freshness("today", today=TODAY),
+    )
+
+    assert recommendation.is_actionable
+    assert recommendation.priority_score == 100
+    assert recommendation.badges == (
+        "fit:shortlist",
+        "freshness:fresh",
+        "trusted-source:official",
+        "review-now",
+    )
+
+
+def test_triage_does_not_rescue_stale_rejected_roles():
+    lead = JobLead(
+        title="Junior Sales Intern",
+        company="Unknown",
+        url="not-a-url",
+        location="Local only",
+        source="unknown",
+        summary="Door to door sales role.",
+    )
+
+    recommendation = triage_decision(
+        score_lead(lead),
+        evaluate_freshness("2026-04-01", today=TODAY),
+    )
+
+    assert not recommendation.is_actionable
+    assert recommendation.priority_score == 0
+    assert recommendation.badges == ("fit:reject", "freshness:stale", "risk-review")
